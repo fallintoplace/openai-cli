@@ -171,21 +171,34 @@ func streamToPagerWithPipe(label string, generateOutput func(w *os.File) error) 
 		os.Setenv("FORCE_COLOR", "1")
 	}
 
-	if err := generateOutput(w); err != nil && !strings.Contains(err.Error(), "broken pipe") {
-		return err
-	}
-
+	outputErr := generateOutput(w)
+	// Deliver EOF and reap the pager even when output generation failed.
 	w.Close()
-	return cmd.Wait()
+	waitErr := cmd.Wait()
+	if outputErr != nil && !isOutputBrokenPipe(outputErr) {
+		return outputErr
+	}
+	return waitErr
 }
 
 func streamToStdout(generateOutput func(w *os.File) error) error {
 	signal.Ignore(syscall.SIGPIPE)
 	err := generateOutput(os.Stdout)
-	if err != nil && strings.Contains(err.Error(), "broken pipe") {
+	if isOutputBrokenPipe(err) {
 		return nil
 	}
 	return err
+}
+
+// outputWriteError identifies failures from the output sink, rather than from
+// the iterator, transport, or formatter producing the output.
+type outputWriteError struct{ error }
+
+func (e *outputWriteError) Unwrap() error { return e.error }
+
+func isOutputBrokenPipe(err error) bool {
+	var outputErr *outputWriteError
+	return errors.As(err, &outputErr) && strings.Contains(outputErr.Error(), "broken pipe")
 }
 
 // writeBinaryResponse writes a binary response to stdout or a file.
@@ -407,6 +420,9 @@ func formatJSONForOutput(res gjson.Result, opts ShowJSONOpts, destination io.Wri
 			return nil, err
 		}
 		_, err := opts.Stdout.Write([]byte(yaml.String()))
+		if err != nil {
+			return nil, &outputWriteError{err}
+		}
 		return nil, err
 	default:
 		return nil, fmt.Errorf("Invalid format: %s, valid formats are: %s", opts.Format, strings.Join(OutputFormats, ", "))
@@ -484,7 +500,7 @@ type hasRawJSON interface {
 func ShowJSONIterator[T any](iter jsonview.Iterator[T], itemsToDisplay int64, opts ShowJSONOpts) error {
 	opts.setDefaults()
 
-	if opts.Format == "explore" {
+	if strings.ToLower(opts.Format) == "explore" {
 		if isTerminal(opts.Stdout) {
 			return jsonview.ExploreJSONStream(opts.Title, iter)
 		}
@@ -545,7 +561,7 @@ func ShowJSONIterator[T any](iter jsonview.Iterator[T], itemsToDisplay int64, op
 	return streamOutput(opts.Title, func(pager *os.File) error {
 		_, err := pager.Write(output)
 		if err != nil {
-			return err
+			return &outputWriteError{err}
 		}
 
 		pagerOpts := opts
@@ -568,7 +584,7 @@ func ShowJSONIterator[T any](iter jsonview.Iterator[T], itemsToDisplay int64, op
 				return err
 			}
 			if _, err := pager.Write(formatted); err != nil {
-				return err
+				return &outputWriteError{err}
 			}
 			itemsToDisplay -= 1
 		}

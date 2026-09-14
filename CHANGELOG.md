@@ -1,5 +1,63 @@
 # Changelog
 
+## [1.15.0](https://github.com/openai/openai-cli/compare/v1.14.0...v1.15.0) (2026-09-10)
+
+
+### Features
+
+* **api:** Add Live API ([#182](https://github.com/openai/openai-cli/issues/182)) ([764e7f5](https://github.com/openai/openai-cli/commit/764e7f56a8d91bc58a1a158b46fc47950545c5c4))
+
+
+### Chores
+
+* **deps:** update openai-go to v3.60.0 ([#173](https://github.com/openai/openai-cli/issues/173)) ([b8c81ec](https://github.com/openai/openai-cli/commit/b8c81ecdcb79aa56324b569de960505b68b86f97))
+
+## [1.14.0](https://github.com/openai/openai-cli/compare/v1.13.0...v1.14.0) (2026-09-09)
+
+
+### Features
+
+* **api:** Add service account key expiration flag ([#177](https://github.com/openai/openai-cli/issues/177)) ([2e1a179](https://github.com/openai/openai-cli/commit/2e1a179921d0e1b354443f123e37a74002c9ae69))
+
+## [1.13.0](https://github.com/openai/openai-cli/compare/v1.12.0...v1.13.0) (2026-09-08)
+
+
+### Features
+
+* **api:** document GPT Image 2.5 models and image options ([#175](https://github.com/openai/openai-cli/issues/175)) ([7a9994d](https://github.com/openai/openai-cli/commit/7a9994dd5c6cfe232fc2ebc548a3da95dddb7439))
+
+
+### Bug Fixes
+
+* **autocomplete:** preserve literal completion-token arguments ([#171](https://github.com/openai/openai-cli/issues/171)) ([01123b7](https://github.com/openai/openai-cli/commit/01123b72b815eaea30cdf0e50608c88b485a9eab))
+* **output:** honor case-insensitive explore format ([#169](https://github.com/openai/openai-cli/issues/169)) ([774c240](https://github.com/openai/openai-cli/commit/774c2406188d66c03a1521b31be2c24d9bda4e46))
+
+## [1.12.0](https://github.com/openai/openai-cli/compare/v1.11.0...v1.12.0) (2026-09-08)
+
+
+### Features
+
+* **api:** Add prompt cache comparison response option ([#155](https://github.com/openai/openai-cli/issues/155)) ([aa76074](https://github.com/openai/openai-cli/commit/aa76074316940047ec21439f541ce5eb06f6b03d))
+* **api:** add service-account API key expiration fields ([#157](https://github.com/openai/openai-cli/issues/157)) ([bf513cb](https://github.com/openai/openai-cli/commit/bf513cb5a3b4cedd0ddb1444ae5c4ae9e937c4cd))
+
+
+### Bug Fixes
+
+* **autocomplete:** use distinct status for no completion ([#164](https://github.com/openai/openai-cli/issues/164)) ([094a4ab](https://github.com/openai/openai-cli/commit/094a4ab96e80c2952c830ae36a9a9f009617e5ec))
+* **jsonview:** preserve raw API fields in lazy-loaded rows ([#163](https://github.com/openai/openai-cli/issues/163)) ([0bf80c0](https://github.com/openai/openai-cli/commit/0bf80c0689dc5bfab37b59b794551a176fb51643))
+* **jsonview:** retain lazy-loaded items across JSON toggles ([#160](https://github.com/openai/openai-cli/issues/160)) ([ef1b383](https://github.com/openai/openai-cli/commit/ef1b3834c0b4c3f2894763b7d64fe77f73a3e405))
+* **output:** preserve upstream errors when streaming ([#159](https://github.com/openai/openai-cli/issues/159)) ([1048593](https://github.com/openai/openai-cli/commit/1048593bafed0651612f770a831cd69ffb5a2c22))
+* **requestflag:** handle inner fields after null array objects ([#162](https://github.com/openai/openai-cli/issues/162)) ([659eb06](https://github.com/openai/openai-cli/commit/659eb06c723e47c5b77ada0a5e0359ddfc0615a1))
+* **requestflag:** preserve piped query arrays ([#167](https://github.com/openai/openai-cli/issues/167)) ([265cf63](https://github.com/openai/openai-cli/commit/265cf6378ab2e6a27c17bc7c0b6a6cbe6dbd477b))
+
+
+### Chores
+
+* **api:** correct function argument completion event fields (openapi-545) ([#156](https://github.com/openai/openai-cli/issues/156)) ([465360b](https://github.com/openai/openai-cli/commit/465360b4ebbdb67f628cb27a205bfe521ce6cc79))
+* **api:** document incomplete web search call status ([#153](https://github.com/openai/openai-cli/issues/153)) ([a843cea](https://github.com/openai/openai-cli/commit/a843cea03c7b7c16cf8b0e1be29b8af7cb7131db))
+* **api:** document throttling and model overload responses — SDK-235 ([#158](https://github.com/openai/openai-cli/issues/158)) ([76d3959](https://github.com/openai/openai-cli/commit/76d39597222479badd615675f485e7848b0dc697))
+* migrate to forked steady ([#152](https://github.com/openai/openai-cli/issues/152)) ([9c18bfa](https://github.com/openai/openai-cli/commit/9c18bfa7be50ee60a4335770c669c5b970c52325))
+
 ## [1.11.0](https://github.com/openai/openai-cli/compare/v1.10.0...v1.11.0) (2026-09-03)
 
 
