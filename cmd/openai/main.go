@@ -1,5 +1,3 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
-
 package main
 
 import (
@@ -19,8 +17,9 @@ import (
 
 func main() {
 	app := cmd.Command
+	app.Flags = append(app.Flags, cmd.NewRequestHeaderFlag())
 
-	if slices.Contains(os.Args, "__complete") {
+	if len(os.Args) > 1 && os.Args[1] == "__complete" {
 		prepareForAutocomplete(app)
 	}
 
