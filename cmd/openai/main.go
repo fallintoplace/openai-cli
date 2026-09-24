@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"slices"
 	"strings"
 
 	"github.com/openai/openai-cli/pkg/cmd"
+	"github.com/openai/openai-cli/pkg/custom"
 	"github.com/openai/openai-go/v3"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli/v3"
@@ -23,14 +23,26 @@ func main() {
 		prepareForAutocomplete(app)
 	}
 
-	if baseURL, ok := os.LookupEnv("OPENAI_BASE_URL"); ok {
-		if err := cmd.ValidateBaseURL(baseURL, "OPENAI_BASE_URL"); err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
-			os.Exit(1)
+	// Request configuration must not prevent local help from opening.
+	requestSetup := app.Before
+	app.Before = func(ctx context.Context, command *cli.Command) (context.Context, error) {
+		if baseURL, ok := os.LookupEnv("OPENAI_BASE_URL"); ok {
+			if err := cmd.ValidateBaseURL(baseURL, "OPENAI_BASE_URL"); err != nil {
+				return ctx, err
+			}
 		}
+		if requestSetup != nil {
+			return requestSetup(ctx, command)
+		}
+		return ctx, nil
 	}
+	args, _, err := custom.ConfigureHelp(app, os.Args)
 
-	if err := app.Run(context.Background(), os.Args); err != nil {
+	ctx := context.Background()
+	if err == nil {
+		err = app.Run(ctx, args)
+	}
+	if err != nil {
 		exitCode := 1
 
 		// Check if error has a custom exit code
@@ -44,6 +56,10 @@ func main() {
 			format := errorOutputFormat(app.String("format-error"))
 			json := gjson.Parse(apierr.RawJSON())
 			showErr := cmd.ShowJSON(json, cmd.ShowJSONOpts{
+				// Error output has no successful-operation transformer routing.
+				Context:        ctx,
+				Operation:      "",
+				OutputKind:     custom.OutputUnspecified,
 				ExplicitFormat: app.IsSet("format-error"),
 				Format:         format,
 				Stderr:         os.Stderr,
